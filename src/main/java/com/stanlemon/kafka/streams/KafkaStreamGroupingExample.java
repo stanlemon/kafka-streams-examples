@@ -29,9 +29,11 @@ public class KafkaStreamGroupingExample {
     private static final String TOPIC_OUTPUT = "streams-output";
 
     public static void main(String[] args) throws Exception {
+        final String bootstrapServers = "localhost:29092";
+
         final Properties streamsProperties = new Properties();
         streamsProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-grouper");
-        streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        streamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         streamsProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         streamsProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
@@ -48,7 +50,7 @@ public class KafkaStreamGroupingExample {
         // Produce some records
         new Thread(() -> {
             final Properties producerProperties = new Properties();
-            producerProperties.put("bootstrap.servers", "localhost:9092");
+            producerProperties.put("bootstrap.servers", bootstrapServers);
             producerProperties.put("acks", "all");
             producerProperties.put("retries", 3);
             producerProperties.put("batch.size", 16384);
@@ -83,7 +85,7 @@ public class KafkaStreamGroupingExample {
         // Consume some records
         new Thread(() -> {
             final Properties consumerProperties = new Properties();
-            consumerProperties.put("bootstrap.servers", "localhost:9092");
+            consumerProperties.put("bootstrap.servers", bootstrapServers);
             consumerProperties.put("group.id", "test");
             consumerProperties.put("key.deserializer", org.apache.kafka.common.serialization.StringDeserializer.class.getName());
             consumerProperties.put("value.deserializer", org.apache.kafka.common.serialization.StringDeserializer.class.getName());
