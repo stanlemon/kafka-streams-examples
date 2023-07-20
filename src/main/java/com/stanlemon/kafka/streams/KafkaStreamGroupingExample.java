@@ -51,11 +51,6 @@ public class KafkaStreamGroupingExample {
         new Thread(() -> {
             final Properties producerProperties = new Properties();
             producerProperties.put("bootstrap.servers", bootstrapServers);
-            producerProperties.put("acks", "all");
-            producerProperties.put("retries", 3);
-            producerProperties.put("batch.size", 16384);
-            producerProperties.put("linger.ms", 1);
-            producerProperties.put("buffer.memory", 33554432);
             producerProperties.put("key.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
             producerProperties.put("value.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
 
@@ -66,11 +61,14 @@ public class KafkaStreamGroupingExample {
 
             while (true) {
                 final int key = ThreadLocalRandom.current().nextInt(min, max + 1);
+                final String value = "record-" + System.currentTimeMillis();
+
+                logger.info("Producing Record for key {} with value {}", key, value);
 
                 producer.send(new ProducerRecord<>(
                     TOPIC_INPUT,
                     "key" + key,
-                    "record-" + System.currentTimeMillis()
+                    value
                 ));
 
                 try {
