@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
+import java.time.Duration;
 
 public class KafkaStreamGroupingExample {
 
@@ -93,7 +94,7 @@ public class KafkaStreamGroupingExample {
             consumer.subscribe(Collections.singletonList(TOPIC_OUTPUT));
 
             while (true) {
-                final ConsumerRecords<String, String> consumerRecords = consumer.poll(300);
+                final ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(300));
 
                 consumerRecords.forEach(record ->
                     logger.info(
