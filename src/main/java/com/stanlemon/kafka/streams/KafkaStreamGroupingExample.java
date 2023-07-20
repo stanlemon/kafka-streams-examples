@@ -41,7 +41,9 @@ public class KafkaStreamGroupingExample {
         final StreamsBuilder builder = new StreamsBuilder();
         builder.<String, String>stream(TOPIC_INPUT)
             .groupByKey()
-            .windowedBy(TimeWindows.of(10_000))
+            .windowedBy(
+                TimeWindows.ofSizeAndGrace(Duration.ofSeconds(2), Duration.ofSeconds(1))
+            )
             .reduce((String value1, String value2) -> value1 + "|" + value2)
             .toStream()
             .map((Windowed<String> key, String value) -> new KeyValue<>(key.key(), value))
@@ -73,7 +75,7 @@ public class KafkaStreamGroupingExample {
                 ));
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                 } catch (InterruptedException ex) {
                     producer.close();
                     break;
